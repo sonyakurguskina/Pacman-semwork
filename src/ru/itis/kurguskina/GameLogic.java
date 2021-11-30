@@ -11,11 +11,15 @@ public class GameLogic {
     public enum CellValue {
         EMPTY, SMALLDOT, BIGDOT, WALL, GHOST1HOME, GHOST2HOME, PACMANHOME
     }
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, NONE
     }
-    @FXML private int rowsCount;
-    @FXML private int columnsCount;
+
+    @FXML
+    private int rowsCount;
+    @FXML
+    private int columnsCount;
     private CellValue[][] grid;
     private int scoreCount;
     private int levelNumber;
@@ -33,7 +37,7 @@ public class GameLogic {
     private static Direction currentDirection;
 
     public GameLogic() {
-//        this.startNewGame();
+        this.startNewGame();
     }
 
     public void initializeLevel(String fileName) {
@@ -68,40 +72,34 @@ public class GameLogic {
         int ghost1Column = 0;
         int ghost2Row = 0;
         int ghost2Column = 0;
-        while(scanner2.hasNextLine()){
+        while (scanner2.hasNextLine()) {
             int column = 0;
-            String line= scanner2.nextLine();
+            String line = scanner2.nextLine();
             Scanner lineScanner = new Scanner(line);
-            while (lineScanner.hasNext()){
+            while (lineScanner.hasNext()) {
                 String value = lineScanner.next();
                 CellValue thisValue;
-                if (value.equals("W")){
+                if (value.equals("W")) {
                     thisValue = CellValue.WALL;
-                }
-                else if (value.equals("S")){
+                } else if (value.equals("S")) {
                     thisValue = CellValue.SMALLDOT;
                     dotsCount++;
-                }
-                else if (value.equals("B")){
+                } else if (value.equals("B")) {
                     thisValue = CellValue.BIGDOT;
                     dotsCount++;
-                }
-                else if (value.equals("1")){
+                } else if (value.equals("1")) {
                     thisValue = CellValue.GHOST1HOME;
                     ghost1Row = row;
                     ghost1Column = column;
-                }
-                else if (value.equals("2")){
+                } else if (value.equals("2")) {
                     thisValue = CellValue.GHOST2HOME;
                     ghost2Row = row;
                     ghost2Column = column;
-                }
-                else if (value.equals("P")){
+                } else if (value.equals("P")) {
                     thisValue = CellValue.PACMANHOME;
                     pacmanRow = row;
                     pacmanColumn = column;
-                }
-                else //(value.equals("E"))
+                } else //(value.equals("E"))
                 {
                     thisValue = CellValue.EMPTY;
                 }
@@ -111,12 +109,72 @@ public class GameLogic {
             row++;
         }
         pacmanCoordinates = new Point2D(pacmanRow, pacmanColumn);
-        pacmanSpeed = new Point2D(0,0);
-        ghost1Coordinates = new Point2D(ghost1Row,ghost1Column);
+        pacmanSpeed = new Point2D(0, 0);
+        ghost1Coordinates = new Point2D(ghost1Row, ghost1Column);
         ghost1Speed = new Point2D(-1, 0);
-        ghost2Coordinates = new Point2D(ghost2Row,ghost2Column);
+        ghost2Coordinates = new Point2D(ghost2Row, ghost2Column);
         ghost2Speed = new Point2D(-1, 0);
         currentDirection = Direction.NONE;
         lastDirection = Direction.NONE;
     }
 
+    public void startNewGame() {
+        this.isGameOver = false;
+        this.isWon = false;
+        this.isWeakGhostMode = false;
+        dotsCount = 0;
+        rowsCount = 0;
+        columnsCount = 0;
+        this.scoreCount = 0;
+        this.levelNumber = 1;
+        this.initializeLevel(Controller.getLevelFile(0));
+    }
+
+    public void startNextLevel() {
+        if (this.isLevelComplete()) {
+            this.levelNumber++;
+            rowsCount = 0;
+            columnsCount = 0;
+            isWon = false;
+            isWeakGhostMode = false;
+            try {
+                this.initializeLevel(Controller.getLevelFile(levelNumber - 1));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                isWon = true;
+                isGameOver = true;
+                levelNumber--;
+            }
+        }
+    }
+
+    public void movePacman(Direction direction) {
+        Point2D potentialPacmanVelocity = changeVelocity(direction);
+        Point2D potentialPacmanLocation = pacmanCoordinates.add(potentialPacmanVelocity);
+        potentialPacmanLocation = setGoingOffscreenNewLocation(potentialPacmanLocation);
+        if (direction.equals(lastDirection)) {
+            if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL) {
+                pacmanSpeed = changeVelocity(Direction.NONE);
+                setLastDirection(Direction.NONE);
+            } else {
+                pacmanSpeed = potentialPacmanVelocity;
+                pacmanCoordinates = potentialPacmanLocation;
+            }
+        } else {
+            if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL) {
+                potentialPacmanVelocity = changeVelocity(lastDirection);
+                potentialPacmanLocation = pacmanCoordinates.add(potentialPacmanVelocity);
+                if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL) {
+                    pacmanSpeed = changeVelocity(Direction.NONE);
+                    setLastDirection(Direction.NONE);
+                } else {
+                    pacmanSpeed = changeVelocity(lastDirection);
+                    pacmanCoordinates = pacmanCoordinates.add(pacmanSpeed);
+                }
+            } else {
+                pacmanSpeed = potentialPacmanVelocity;
+                pacmanCoordinates = potentialPacmanLocation;
+                setLastDirection(direction);
+            }
+        }
+    }
+}
