@@ -177,4 +177,130 @@ public class GameLogic {
             }
         }
     }
+
+    public void moveGhosts() {
+        Point2D[] ghost1Data = moveAGhost(ghost1Speed, ghost1Coordinates);
+        Point2D[] ghost2Data = moveAGhost(ghost2Speed, ghost2Coordinates);
+        ghost1Speed = ghost1Data[0];
+        ghost1Coordinates = ghost1Data[1];
+        ghost2Speed = ghost2Data[0];
+        ghost2Coordinates = ghost2Data[1];
+
+    }
+
+    public Point2D[] moveAGhost(Point2D velocity, Point2D location) {
+        Random generator = new Random();
+        if (!isWeakGhostMode) {
+            if (location.getY() == pacmanCoordinates.getY()) {
+                if (location.getX() > pacmanCoordinates.getX()) {
+                    velocity = changeVelocity(Direction.UP);
+                } else {
+                    velocity = changeVelocity(Direction.DOWN);
+                }
+                Point2D potentialLocation = location.add(velocity);
+                potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
+                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
+                    int randomNum = generator.nextInt(4);
+                    Direction direction = intToDirection(randomNum);
+                    velocity = changeVelocity(direction);
+                    potentialLocation = location.add(velocity);
+                }
+                location = potentialLocation;
+            } else if (location.getX() == pacmanCoordinates.getX()) {
+                if (location.getY() > pacmanCoordinates.getY()) {
+                    velocity = changeVelocity(Direction.LEFT);
+                } else {
+                    velocity = changeVelocity(Direction.RIGHT);
+                }
+                Point2D potentialLocation = location.add(velocity);
+                potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
+                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
+                    int randomNum = generator.nextInt(4);
+                    Direction direction = intToDirection(randomNum);
+                    velocity = changeVelocity(direction);
+                    potentialLocation = location.add(velocity);
+                }
+                location = potentialLocation;
+            } else {
+                Point2D potentialLocation = location.add(velocity);
+                potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
+                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
+                    int randomNum = generator.nextInt(4);
+                    Direction direction = intToDirection(randomNum);
+                    velocity = changeVelocity(direction);
+                    potentialLocation = location.add(velocity);
+                }
+                location = potentialLocation;
+            }
+        }
+        if (isWeakGhostMode) {
+            if (location.getY() == pacmanCoordinates.getY()) {
+                if (location.getX() > pacmanCoordinates.getX()) {
+                    velocity = changeVelocity(Direction.DOWN);
+                } else {
+                    velocity = changeVelocity(Direction.UP);
+                }
+                Point2D potentialLocation = location.add(velocity);
+                potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
+                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
+                    int randomNum = generator.nextInt(4);
+                    Direction direction = intToDirection(randomNum);
+                    velocity = changeVelocity(direction);
+                    potentialLocation = location.add(velocity);
+                }
+                location = potentialLocation;
+            } else if (location.getX() == pacmanCoordinates.getX()) {
+                if (location.getY() > pacmanCoordinates.getY()) {
+                    velocity = changeVelocity(Direction.RIGHT);
+                } else {
+                    velocity = changeVelocity(Direction.LEFT);
+                }
+                Point2D potentialLocation = location.add(velocity);
+                potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
+                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
+                    int randomNum = generator.nextInt(4);
+                    Direction direction = intToDirection(randomNum);
+                    velocity = changeVelocity(direction);
+                    potentialLocation = location.add(velocity);
+                }
+                location = potentialLocation;
+            } else {
+                Point2D potentialLocation = location.add(velocity);
+                potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
+                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
+                    int randomNum = generator.nextInt(4);
+                    Direction direction = intToDirection(randomNum);
+                    velocity = changeVelocity(direction);
+                    potentialLocation = location.add(velocity);
+                }
+                location = potentialLocation;
+            }
+        }
+        Point2D[] data = {velocity, location};
+        return data;
+
+    }
+
+    public Point2D setGoingOffscreenNewLocation(Point2D objectLocation) {
+        //if object goes offscreen on the right
+        if (objectLocation.getY() >= columnsCount) {
+            objectLocation = new Point2D(objectLocation.getX(), 0);
+        }
+        if (objectLocation.getY() < 0) {
+            objectLocation = new Point2D(objectLocation.getX(), columnsCount - 1);
+        }
+        return objectLocation;
+    }
+
+    public Direction intToDirection(int x) {
+        if (x == 0) {
+            return Direction.LEFT;
+        } else if (x == 1) {
+            return Direction.RIGHT;
+        } else if (x == 2) {
+            return Direction.UP;
+        } else {
+            return Direction.DOWN;
+        }
+    }
 }
