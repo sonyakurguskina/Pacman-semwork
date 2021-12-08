@@ -11,15 +11,11 @@ public class GameLogic {
     public enum CellValue {
         EMPTY, SMALLDOT, BIGDOT, WALL, GHOST1HOME, GHOST2HOME, PACMANHOME
     }
-
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, NONE
     }
-
-    @FXML
-    private int rowsCount;
-    @FXML
-    private int columnsCount;
+    @FXML private int rowsCount;
+    @FXML private int columnsCount;
     private CellValue[][] grid;
     private int scoreCount;
     private int levelNumber;
@@ -72,34 +68,40 @@ public class GameLogic {
         int ghost1Column = 0;
         int ghost2Row = 0;
         int ghost2Column = 0;
-        while (scanner2.hasNextLine()) {
+        while(scanner2.hasNextLine()){
             int column = 0;
-            String line = scanner2.nextLine();
+            String line= scanner2.nextLine();
             Scanner lineScanner = new Scanner(line);
-            while (lineScanner.hasNext()) {
+            while (lineScanner.hasNext()){
                 String value = lineScanner.next();
                 CellValue thisValue;
-                if (value.equals("W")) {
+                if (value.equals("W")){
                     thisValue = CellValue.WALL;
-                } else if (value.equals("S")) {
+                }
+                else if (value.equals("S")){
                     thisValue = CellValue.SMALLDOT;
                     dotsCount++;
-                } else if (value.equals("B")) {
+                }
+                else if (value.equals("B")){
                     thisValue = CellValue.BIGDOT;
                     dotsCount++;
-                } else if (value.equals("1")) {
+                }
+                else if (value.equals("1")){
                     thisValue = CellValue.GHOST1HOME;
                     ghost1Row = row;
                     ghost1Column = column;
-                } else if (value.equals("2")) {
+                }
+                else if (value.equals("2")){
                     thisValue = CellValue.GHOST2HOME;
                     ghost2Row = row;
                     ghost2Column = column;
-                } else if (value.equals("P")) {
+                }
+                else if (value.equals("P")){
                     thisValue = CellValue.PACMANHOME;
                     pacmanRow = row;
                     pacmanColumn = column;
-                } else //(value.equals("E"))
+                }
+                else //(value.equals("E"))
                 {
                     thisValue = CellValue.EMPTY;
                 }
@@ -109,10 +111,10 @@ public class GameLogic {
             row++;
         }
         pacmanCoordinates = new Point2D(pacmanRow, pacmanColumn);
-        pacmanSpeed = new Point2D(0, 0);
-        ghost1Coordinates = new Point2D(ghost1Row, ghost1Column);
+        pacmanSpeed = new Point2D(0,0);
+        ghost1Coordinates = new Point2D(ghost1Row,ghost1Column);
         ghost1Speed = new Point2D(-1, 0);
-        ghost2Coordinates = new Point2D(ghost2Row, ghost2Column);
+        ghost2Coordinates = new Point2D(ghost2Row,ghost2Column);
         ghost2Speed = new Point2D(-1, 0);
         currentDirection = Direction.NONE;
         lastDirection = Direction.NONE;
@@ -139,7 +141,8 @@ public class GameLogic {
             isWeakGhostMode = false;
             try {
                 this.initializeLevel(Controller.getLevelFile(levelNumber - 1));
-            } catch (ArrayIndexOutOfBoundsException e) {
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
                 isWon = true;
                 isGameOver = true;
                 levelNumber--;
@@ -152,25 +155,29 @@ public class GameLogic {
         Point2D potentialPacmanLocation = pacmanCoordinates.add(potentialPacmanVelocity);
         potentialPacmanLocation = setGoingOffscreenNewLocation(potentialPacmanLocation);
         if (direction.equals(lastDirection)) {
-            if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL) {
+            if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL){
                 pacmanSpeed = changeVelocity(Direction.NONE);
                 setLastDirection(Direction.NONE);
-            } else {
+            }
+            else {
                 pacmanSpeed = potentialPacmanVelocity;
                 pacmanCoordinates = potentialPacmanLocation;
             }
-        } else {
-            if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL) {
+        }
+        else {
+            if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL){
                 potentialPacmanVelocity = changeVelocity(lastDirection);
                 potentialPacmanLocation = pacmanCoordinates.add(potentialPacmanVelocity);
-                if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL) {
+                if (grid[(int) potentialPacmanLocation.getX()][(int) potentialPacmanLocation.getY()] == CellValue.WALL){
                     pacmanSpeed = changeVelocity(Direction.NONE);
                     setLastDirection(Direction.NONE);
-                } else {
+                }
+                else {
                     pacmanSpeed = changeVelocity(lastDirection);
                     pacmanCoordinates = pacmanCoordinates.add(pacmanSpeed);
                 }
-            } else {
+            }
+            else {
                 pacmanSpeed = potentialPacmanVelocity;
                 pacmanCoordinates = potentialPacmanLocation;
                 setLastDirection(direction);
@@ -188,7 +195,7 @@ public class GameLogic {
 
     }
 
-    public Point2D[] moveAGhost(Point2D velocity, Point2D location) {
+    public Point2D[] moveAGhost(Point2D velocity, Point2D location){
         Random generator = new Random();
         if (!isWeakGhostMode) {
             if (location.getY() == pacmanCoordinates.getY()) {
@@ -206,7 +213,8 @@ public class GameLogic {
                     potentialLocation = location.add(velocity);
                 }
                 location = potentialLocation;
-            } else if (location.getX() == pacmanCoordinates.getX()) {
+            }
+            else if (location.getX() == pacmanCoordinates.getX()) {
                 if (location.getY() > pacmanCoordinates.getY()) {
                     velocity = changeVelocity(Direction.LEFT);
                 } else {
@@ -221,11 +229,12 @@ public class GameLogic {
                     potentialLocation = location.add(velocity);
                 }
                 location = potentialLocation;
-            } else {
+            }
+            else{
                 Point2D potentialLocation = location.add(velocity);
                 potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
-                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
-                    int randomNum = generator.nextInt(4);
+                while(grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL){
+                    int randomNum = generator.nextInt( 4);
                     Direction direction = intToDirection(randomNum);
                     velocity = changeVelocity(direction);
                     potentialLocation = location.add(velocity);
@@ -264,11 +273,12 @@ public class GameLogic {
                     potentialLocation = location.add(velocity);
                 }
                 location = potentialLocation;
-            } else {
+            }
+            else{
                 Point2D potentialLocation = location.add(velocity);
                 potentialLocation = setGoingOffscreenNewLocation(potentialLocation);
-                while (grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL) {
-                    int randomNum = generator.nextInt(4);
+                while(grid[(int) potentialLocation.getX()][(int) potentialLocation.getY()] == CellValue.WALL){
+                    int randomNum = generator.nextInt( 4);
                     Direction direction = intToDirection(randomNum);
                     velocity = changeVelocity(direction);
                     potentialLocation = location.add(velocity);
@@ -292,15 +302,189 @@ public class GameLogic {
         return objectLocation;
     }
 
-    public Direction intToDirection(int x) {
-        if (x == 0) {
+    public Direction intToDirection(int x){
+        if (x == 0){
             return Direction.LEFT;
-        } else if (x == 1) {
+        }
+        else if (x == 1){
             return Direction.RIGHT;
-        } else if (x == 2) {
+        }
+        else if(x == 2){
             return Direction.UP;
-        } else {
+        }
+        else{
             return Direction.DOWN;
         }
+    }
+
+    public void sendGhost1Home() {
+        for (int row = 0; row < this.rowsCount; row++) {
+            for (int column = 0; column < this.columnsCount; column++) {
+                if (grid[row][column] == CellValue.GHOST1HOME) {
+                    ghost1Coordinates = new Point2D(row, column);
+                }
+            }
+        }
+        ghost1Speed = new Point2D(-1, 0);
+    }
+
+    public void sendGhost2Home() {
+        for (int row = 0; row < this.rowsCount; row++) {
+            for (int column = 0; column < this.columnsCount; column++) {
+                if (grid[row][column] == CellValue.GHOST2HOME) {
+                    ghost2Coordinates = new Point2D(row, column);
+                }
+            }
+        }
+        ghost2Speed = new Point2D(-1, 0);
+    }
+
+    public void step(Direction direction) {
+        this.movePacman(direction);
+        CellValue pacmanLocationCellValue = grid[(int) pacmanCoordinates.getX()][(int) pacmanCoordinates.getY()];
+        if (pacmanLocationCellValue == CellValue.SMALLDOT) {
+            grid[(int) pacmanCoordinates.getX()][(int) pacmanCoordinates.getY()] = CellValue.EMPTY;
+            dotsCount--;
+            scoreCount += 10;
+        }
+        if (pacmanLocationCellValue == CellValue.BIGDOT) {
+            grid[(int) pacmanCoordinates.getX()][(int) pacmanCoordinates.getY()] = CellValue.EMPTY;
+            dotsCount--;
+            scoreCount += 50;
+            isWeakGhostMode = true;
+            Controller.setWeakGhostModeCounter();
+        }
+        if (isWeakGhostMode) {
+            if (pacmanCoordinates.equals(ghost1Coordinates)) {
+                sendGhost1Home();
+                scoreCount += 100;
+            }
+            if (pacmanCoordinates.equals(ghost2Coordinates)) {
+                sendGhost2Home();
+                scoreCount += 100;
+            }
+        }
+        else {
+            if (pacmanCoordinates.equals(ghost1Coordinates)) {
+                isGameOver = true;
+                pacmanSpeed = new Point2D(0,0);
+            }
+            if (pacmanCoordinates.equals(ghost2Coordinates)) {
+                isGameOver = true;
+                pacmanSpeed = new Point2D(0,0);
+            }
+        }
+        this.moveGhosts();
+        if (isWeakGhostMode) {
+            if (pacmanCoordinates.equals(ghost1Coordinates)) {
+                sendGhost1Home();
+                scoreCount += 100;
+            }
+            if (pacmanCoordinates.equals(ghost2Coordinates)) {
+                sendGhost2Home();
+                scoreCount += 100;
+            }
+        }
+        else {
+            if (pacmanCoordinates.equals(ghost1Coordinates)) {
+                isGameOver = true;
+                pacmanSpeed = new Point2D(0,0);
+            }
+            if (pacmanCoordinates.equals(ghost2Coordinates)) {
+                isGameOver = true;
+                pacmanSpeed = new Point2D(0,0);
+            }
+        }
+        if (this.isLevelComplete()) {
+            pacmanSpeed = new Point2D(0,0);
+            startNextLevel();
+        }
+    }
+
+    public Point2D changeVelocity(Direction direction){
+        if(direction == Direction.LEFT){
+            return new Point2D(0,-1);
+        }
+        else if(direction == Direction.RIGHT){
+            return new Point2D(0,1);
+        }
+        else if(direction == Direction.UP){
+            return new Point2D(-1,0);
+        }
+        else if(direction == Direction.DOWN){
+            return new Point2D(1,0);
+        }
+        else{
+            return new Point2D(0,0);
+        }
+    }
+
+    public static boolean isIsWeakGhostMode() {
+        return isWeakGhostMode;
+    }
+
+    public static void setWeakGhostMode(boolean ghostEatingModeBool) {
+        isWeakGhostMode = ghostEatingModeBool;
+    }
+
+    public static boolean isIsWon() {
+        return isWon;
+    }
+
+    public boolean isLevelComplete() {
+        return this.dotsCount == 0;
+    }
+
+    public static boolean isIsGameOver() {
+        return isGameOver;
+    }
+
+    public CellValue getCellValue(int row, int column) {
+        assert row >= 0 && row < this.grid.length && column >= 0 && column < this.grid[0].length;
+        return this.grid[row][column];
+    }
+
+    public static Direction getCurrentDirection() {
+        return currentDirection;
+    }
+
+    public void setCurrentDirection(Direction direction) {
+        currentDirection = direction;
+    }
+
+    public static Direction getLastDirection() {
+        return lastDirection;
+    }
+
+    public void setLastDirection(Direction direction) {
+        lastDirection = direction;
+    }
+
+    public int getScoreCount() {
+        return scoreCount;
+    }
+
+    public int getLevelNumber() {
+        return levelNumber;
+    }
+
+    public int getRowsCount() {
+        return rowsCount;
+    }
+
+    public int getColumnsCount() {
+        return columnsCount;
+    }
+
+    public Point2D getPacmanCoordinates() {
+        return pacmanCoordinates;
+    }
+
+    public Point2D getGhost1Coordinates() {
+        return ghost1Coordinates;
+    }
+
+    public Point2D getGhost2Coordinates() {
+        return ghost2Coordinates;
     }
 }
