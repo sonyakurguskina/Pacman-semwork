@@ -87,25 +87,54 @@ public class Controller implements EventHandler<KeyEvent> {
         }
     }
 
+
     @Override
     public void handle(KeyEvent keyEvent) {
         boolean keyRecognized = true;
         KeyCode code = keyEvent.getCode();
-
-        Boolean isSend = client.sendMessage(code);
-
-        if (code == KeyCode.G) {
+        GameLogic.Direction direction = GameLogic.Direction.NONE;
+        if (code == KeyCode.LEFT) {
+            direction = GameLogic.Direction.LEFT;
+        } else if (code == KeyCode.RIGHT) {
+            direction = GameLogic.Direction.RIGHT;
+        } else if (code == KeyCode.UP) {
+            direction = GameLogic.Direction.UP;
+        } else if (code == KeyCode.DOWN) {
+            direction = GameLogic.Direction.DOWN;
+        } else if (code == KeyCode.G) {
             pause();
             this.gameLogic.startNewGame();
             this.gameOver.setText(String.format(""));
             paused = false;
             this.runTimer();
+        } else {
+            keyRecognized = false;
         }
-
-        if (isSend) {
+        if (keyRecognized) {
             keyEvent.consume();
+            gameLogic.setCurrentDirection(direction);
         }
     }
+
+//    @Override
+//    public void handle(KeyEvent keyEvent) {
+//        boolean keyRecognized = true;
+//        KeyCode code = keyEvent.getCode();
+//
+//        Boolean isSend = client.sendMessage(code);
+//
+//        if (code == KeyCode.G) {
+//            pause();
+//            this.gameLogic.startNewGame();
+//            this.gameOver.setText(String.format(""));
+//            paused = false;
+//            this.runTimer();
+//        }
+//
+//        if (isSend) {
+//            keyEvent.consume();
+//        }
+//    }
 
 
     public void pause() {
