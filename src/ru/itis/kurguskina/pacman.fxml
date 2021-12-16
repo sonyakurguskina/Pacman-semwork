@@ -1,0 +1,25 @@
+<?import javafx.scene.layout.AnchorPane?><?import ru.itis.kurguskina.PacManMapping?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane fx:controller="ru.itis.kurguskina.Controller" style="-fx-background-color: black;" xmlns:fx="http://javafx.com/fxml">
+    <top>
+        <BorderPane prefHeight="35" style="-fx-background-color: #2d0808; -fx-padding: 10px, 5px, 10px, 5px" >
+            <left><Label fx:id="score" style="-fx-font-size: 150%; -fx-text-fill: #ffffff" /></left>
+            <center><Label fx:id="gameOver" style="-fx-font-size: 150%; -fx-text-fill: #ffffff" /></center>
+            <right><Label fx:id="level" style="-fx-font-size: 150%; -fx-text-fill: #ffffff"/></right>
+        </BorderPane>
+    </top>
+
+    <center>
+        <PacManMapping fx:id="pacManMapping" rowsCount="21" columnsCount="19" />
+    </center>
+
+    <bottom>
+        <HBox prefHeight="35" style="-fx-padding: 10px, 5px, 10px, 5px; -fx-background-color: #000000">
+            <Label style="-fx-font-size: 140%; -fx-text-fill: white"
+                   text="press g to restart" />
+        </HBox>
+    </bottom>
+</BorderPane>
