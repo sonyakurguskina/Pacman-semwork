@@ -41,7 +41,7 @@ public class Client {
     }
 
     public void start() throws IOException {
-        socket = new Socket("127.0.0.1", 9999);
+        socket = new Socket("127.0.0.1", 9955);
         BufferedReader inputStream = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
         clientThread = new ClientThread(inputStream, outputStream, this, gameLogic);

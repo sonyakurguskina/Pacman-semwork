@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-    private static final int PORT = 9999;
+    private static final int PORT = 9955;
     private ServerSocket socket;
     private final List<ServerThread> clients = new ArrayList<>();
     private String parameter = "";

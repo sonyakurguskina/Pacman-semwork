@@ -1,10 +1,8 @@
 package ru.itis.kurguskina;
 
 import javafx.geometry.Point2D;
-
 import javafx.fxml.FXML;
 import java.io.*;
-
 import java.util.*;
 
 public class GameLogic {
